@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Milestone 1 - Data Project</title>
+  <style>
+    :root { --bg:#f7fafc; --card:#ffffff; --text:#1f2937; --muted:#4b5563; --accent:#0f766e; --line:#cbd5e1; }
+    body { margin:0; font-family: "Segoe UI", Tahoma, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:900px; margin:32px auto; padding:0 16px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:16px; }
+    h1,h2 { margin:0 0 10px; }
+    p { line-height:1.5; color:var(--muted); }
+    a { color:var(--accent); text-decoration:none; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th,td { border:1px solid var(--line); padding:8px; text-align:left; }
+    th { background:#ecfeff; }
+    .small { font-size:13px; color:var(--muted); }
+    code { background:#eef2ff; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Milestone 1: Dataset + ETL Draft</h1>
+      <p>This page is the GitHub Pages entry for Milestone 1. The full notebook is available here: <a href="milestone1.ipynb">milestone1.ipynb</a>.</p>
+      <p class="small">If you want your exact notebook rendering, run <code>jupyter nbconvert --to html milestone1.ipynb</code> locally and replace this file with the generated <code>index.html</code>.</p>
+    </div>
+
+    <div class="card">
+      <h2>Candidate Datasets</h2>
+      <p>1) Retail orders/returns, 2) bike-share trips, and 3) restaurant inspections. The current draft prioritizes retail orders to analyze return-adjusted revenue and inventory decisions.</p>
+      <p><strong>Question:</strong> Which categories and regions drive the highest net sales after returns, and how should managers adjust monthly stocking priorities?</p>
+    </div>
+
+    <div class="card">
+      <h2>ETL Preview Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>order_id</th><th>order_date</th><th>month</th><th>region</th><th>category</th><th>item</th><th>quantity</th><th>unit_price</th><th>returned</th><th>net_sales</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1001</td><td>2025-09-01</td><td>2025-09</td><td>North</td><td>Office</td><td>Chair</td><td>2</td><td>120</td><td>0</td><td>240</td></tr>
+          <tr><td>1002</td><td>2025-09-03</td><td>2025-09</td><td>South</td><td>Office</td><td>Desk</td><td>1</td><td>260</td><td>0</td><td>260</td></tr>
+          <tr><td>1003</td><td>2025-09-05</td><td>2025-09</td><td>West</td><td>Tech</td><td>Headset</td><td>3</td><td>40</td><td>1</td><td>0</td></tr>
+          <tr><td>1004</td><td>2025-10-01</td><td>2025-10</td><td>North</td><td>Office</td><td>Chair</td><td>1</td><td>120</td><td>0</td><td>120</td></tr>
+          <tr><td>1005</td><td>2025-10-08</td><td>2025-10</td><td>East</td><td>Tech</td><td>Mouse</td><td>5</td><td>25</td><td>0</td><td>125</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Interesting Stat + Graph</h2>
+      <p><strong>Interesting stat:</strong> Top region by net sales in this draft sample is <strong>South ($400)</strong>.</p>
+      <svg viewBox="0 0 640 260" width="100%" role="img" aria-label="Monthly net sales line chart">
+        <rect x="0" y="0" width="640" height="260" fill="#ffffff" />
+        <line x1="60" y1="210" x2="600" y2="210" stroke="#94a3b8" />
+        <line x1="60" y1="40" x2="60" y2="210" stroke="#94a3b8" />
+        <polyline fill="none" stroke="#0f766e" stroke-width="3" points="120,82 320,140 520,100" />
+        <circle cx="120" cy="82" r="5" fill="#0f766e" />
+        <circle cx="320" cy="140" r="5" fill="#0f766e" />
+        <circle cx="520" cy="100" r="5" fill="#0f766e" />
+        <text x="110" y="228" font-size="12">2025-09</text>
+        <text x="310" y="228" font-size="12">2025-10</text>
+        <text x="510" y="228" font-size="12">2025-11</text>
+        <text x="18" y="210" font-size="12">0</text>
+        <text x="12" y="143" font-size="12">200</text>
+        <text x="12" y="76" font-size="12">400</text>
+        <text x="220" y="24" font-size="14">Monthly Net Sales (Draft)</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
