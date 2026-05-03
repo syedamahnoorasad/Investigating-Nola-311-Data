@@ -7909,7 +7909,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Import libraries and load the New Orleans and Chicago 311 datasets.</span>
@@ -7921,6 +7921,7 @@ a.anchor-link {
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+
 <span class="c1"># Load the datasets</span>
 
 <span class="n">nola_311</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'311_OPCD_Calls_2012-Present.csv'</span><span class="p">)</span>
@@ -8355,17 +8356,18 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### Fixing column names </span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Fixing column names </span>
 
-<span class="c1">### stripped leading and white space, converted to lowercase, replaced spaces with underscores</span>
+<span class="c1"># stripped leading and white space, converted to lowercase, replaced spaces with underscores</span>
+<span class="c1"># Normalize the New Orleans headers before aligning fields across cities.</span>
 <span class="n">nola_311</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">nola_311</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'_'</span><span class="p">)</span>
 <span class="n">nola_311</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">'service_request_#'</span><span class="p">:</span> <span class="s1">'request_number'</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">nola_311</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">'rowid'</span><span class="p">:</span> <span class="s1">'row_id'</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1">### rename Chicago columns to match equivalent New Orleans columns</span>
+<span class="c1"># Map Chicago field names onto the shared naming scheme used in the notebook.</span>
 <span class="n">chi_to_nola_column_map</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'SR_NUMBER'</span><span class="p">:</span> <span class="s1">'request_number'</span><span class="p">,</span>
     <span class="s1">'SR_TYPE'</span><span class="p">:</span> <span class="s1">'request_reason'</span><span class="p">,</span>
@@ -8404,15 +8406,15 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### dropping redundant columns for New Orleans dataset</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># dropping redundant columns for New Orleans dataset</span>
 <span class="n">nola_311</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'location'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 
-<span class="c1">#### keep only relevantcolumns that are in both datasets except precinct and origin in Chicago dataset</span>
+<span class="c1"># Retain the common fields needed for cross-city comparison.</span>
 <span class="n">keep_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'request_number'</span><span class="p">,</span> <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'origin'</span><span class="p">,</span> <span class="s1">'date_created'</span><span class="p">,</span> <span class="s1">'date_modified'</span><span class="p">,</span> <span class="s1">'date_closed'</span><span class="p">,</span> <span class="s1">'request_status'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'address'</span><span class="p">,</span> <span class="s1">'longitude'</span><span class="p">,</span> <span class="s1">'latitude'</span><span class="p">,</span> <span class="s2">"precinct"</span><span class="p">]</span>
 <span class="n">chi_311</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="n">keep_columns</span><span class="p">]</span>
 </pre></div>
@@ -8439,7 +8441,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### convert columns to appropriate data types</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Convert New Orleans identifiers, coordinates, and timestamps to analysis-ready types.</span>
 <span class="n">nola_311</span><span class="p">[</span><span class="s1">'request_number'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[</span><span class="s1">'request_number'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 <span class="n">nola_311</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">nola_311</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
@@ -8451,7 +8453,8 @@ a.anchor-link {
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">nola_311</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s2">","</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-<span class="c1">### convert Chicago columns to appropriate data types</span>
+<span class="c1"># convert Chicago columns to appropriate data types</span>
+<span class="c1"># Cast Chicago text fields and parse its date and coordinate columns.</span>
 <span class="n">string_columns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_number'</span><span class="p">,</span> <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'request_status'</span><span class="p">,</span>
     <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'origin'</span><span class="p">,</span> <span class="s1">'address'</span><span class="p">,</span> <span class="s1">'precinct'</span>
@@ -8468,7 +8471,7 @@ a.anchor-link {
     <span class="n">chi_311</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">chi_311</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'coerce'</span><span class="p">)</span>
 
 
-<span class="c1">### standardize request_status values by replacing 'Closed' with 'Completed' and converting to string data type</span>
+<span class="c1"># standardize request_status values by replacing 'Closed' with 'Completed' and converting to string data type</span>
 <span class="n">chi_311</span><span class="p">[</span><span class="s1">'request_status'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="s1">'request_status'</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">'Closed'</span><span class="p">:</span> <span class="s1">'Completed'</span><span class="p">})</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Chicago 311 Data Types:"</span><span class="p">)</span>
@@ -8539,10 +8542,10 @@ precinct , string
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### subset New Orleans data from January 1, 2020 through December 31, 2025</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># subset New Orleans data from January 1, 2020 through December 31, 2025</span>
 <span class="n">nola_start_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s1">'2020-01-01'</span> <span class="o">+</span> <span class="s1">' 00:00:00'</span><span class="p">)</span>
 <span class="n">nola_end_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s1">'2025-12-31 23:59:59'</span><span class="p">)</span>
 <span class="n">nola_311</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[</span>
@@ -8553,7 +8556,7 @@ precinct , string
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"New Orleans 311 data end date: </span><span class="si">{</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
-<span class="c1">### chicago data start and end dates</span>
+<span class="c1"># Inspect the Chicago date range for context before comparing cities.</span>
 <span class="n">chi_start_date</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 <span class="n">chi_end_date</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Chicago 311 data start date: </span><span class="si">{</span><span class="n">chi_start_date</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -8595,10 +8598,10 @@ Chicago 311 data end date: 2025-12-31 23:59:32
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## remove information only requests </span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Drop informational calls so the Chicago data reflects service requests rather than lookup traffic.</span>
 <span class="n">chi_311</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="o">~</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'request_reason'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">'311 INFORMATION ONLY CALL'</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -8754,16 +8757,16 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Compare complaint volume per 1,000 residents using city population counts.</span>
 
-<span class="n">nola_pop</span> <span class="o">=</span> <span class="mi">384130</span> <span class="c1">### april 2024</span>
-<span class="n">chi_pop</span> <span class="o">=</span> <span class="mi">2748331</span> <span class="c1">### april 2024</span>
+<span class="n">nola_pop</span> <span class="o">=</span> <span class="mi">384130</span> <span class="c1"># april 2024</span>
+<span class="n">chi_pop</span> <span class="o">=</span> <span class="mi">2748331</span> <span class="c1"># april 2024</span>
 
 
-<span class="c1">### average number of complaints per 1000 residents  </span>
+<span class="c1"># average number of complaints per 1000 residents  </span>
 <span class="n">complaints_per_1000</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
     <span class="s1">'city'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'New Orleans'</span><span class="p">,</span> <span class="s1">'Chicago'</span><span class="p">],</span>
     <span class="s1">'complaints_per_1000'</span><span class="p">:</span> <span class="p">[</span>
@@ -8830,14 +8833,14 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Missingness audit for key columns in both datasets</span>
 <span class="n">nola_audit_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'date_closed'</span><span class="p">,</span> <span class="s1">'address'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span><span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'request_status'</span><span class="p">,</span> <span class="s1">'longitude'</span><span class="p">,</span> <span class="s1">'latitude'</span><span class="p">]</span>
 <span class="n">chi_audit_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'date_closed'</span><span class="p">,</span> <span class="s1">'address'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'request_status'</span><span class="p">,</span> <span class="s1">'longitude'</span><span class="p">,</span> <span class="s1">'latitude'</span><span class="p">]</span>
 
-<span class="c1">### calculate percentage of missing values in each key column for both datasets</span>
+<span class="c1"># Summarize missingness as percentages so coverage can be compared side by side.</span>
 <span class="n">completeness_audit</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
     <span class="s1">'New Orleans'</span><span class="p">:</span> <span class="n">nola_311</span><span class="p">[</span><span class="n">nola_audit_cols</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
     <span class="s1">'Chicago'</span><span class="p">:</span> <span class="n">chi_311</span><span class="p">[</span><span class="n">chi_audit_cols</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
@@ -8845,7 +8848,8 @@ Datapoints in Chicago dataset: 7125138
 
 <span class="n">completeness_audit</span>
 
-<span class="c1">### create a heatmap to visualize the percentage of missing values in key columns for both cities</span>
+<span class="c1"># create a heatmap to visualize the percentage of missing values in key columns for both cities</span>
+<span class="c1"># Reshape the audit table for a city-by-column heatmap.</span>
 <span class="n">completeness_heatmap</span> <span class="o">=</span> <span class="n">completeness_audit</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'column'</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -8910,15 +8914,16 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### compare the distribution of request_status values between the two cities, standardizing the status values to 'Closed', 'Pending', 'Canceled', and 'Open' for better comparison</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># compare the distribution of request_status values between the two cities, standardizing the status values to 'Closed', 'Pending', 'Canceled', and 'Open' for better comparison</span>
 
 <span class="n">status_order_nola</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Closed'</span><span class="p">,</span> <span class="s1">'Pending'</span><span class="p">,</span> <span class="s1">'Canceled'</span><span class="p">]</span>
 <span class="n">status_order_chi</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Closed'</span><span class="p">,</span> <span class="s1">'Open'</span><span class="p">,</span> <span class="s1">'Canceled'</span><span class="p">]</span>
 
-<span class="c1">### calculate the proportion of each request_status value in both datasets</span>
+<span class="c1"># calculate the proportion of each request_status value in both datasets</span>
+<span class="c1"># Standardize and tabulate request status shares for New Orleans.</span>
 <span class="n">nola_status_compare</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="s1">'request_status'</span><span class="p">]</span>
     <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">'Unknown'</span><span class="p">)</span>
@@ -8932,6 +8937,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">)</span>
 <span class="n">nola_status_compare</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'New Orleans'</span>
 
+<span class="c1"># Apply the same status cleanup to the Chicago data.</span>
 <span class="n">chi_status_compare</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_311</span><span class="p">[</span><span class="s1">'request_status'</span><span class="p">]</span>
     <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">'Unknown'</span><span class="p">)</span>
@@ -8945,14 +8951,14 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">)</span>
 <span class="n">chi_status_compare</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Chicago'</span>
 
-<span class="c1">### combine the status proportions for both cities into a single DataFrame for comparison</span>
+<span class="c1"># Combine both city summaries before plotting them together.</span>
 <span class="n">status_proportions_compare</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">nola_status_compare</span><span class="p">,</span> <span class="n">chi_status_compare</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">status_proportions_compare</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="c1">### create side-by-side bar plots comparing the proportion of each request_status value between New Orleans and Chicago</span>
+<span class="c1"># create side-by-side bar plots comparing the proportion of each request_status value between New Orleans and Chicago</span>
 <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">city</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="s1">'New Orleans'</span><span class="p">,</span> <span class="s1">'Chicago'</span><span class="p">]):</span>
     <span class="n">city_data</span> <span class="o">=</span> <span class="n">status_proportions_compare</span><span class="p">[</span><span class="n">status_proportions_compare</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">==</span> <span class="n">city</span><span class="p">]</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">city_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'request_status'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'proportion'</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">'request_status'</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">'Set2'</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
@@ -9046,11 +9052,12 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### New Orleans monthly trend</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># New Orleans monthly trend</span>
 
+<span class="c1"># Count requests by month for New Orleans across the shared study period.</span>
 <span class="n">nola_monthly_trend</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="s1">'2020-01-01'</span><span class="p">,</span> <span class="s1">'2025-12-31 23:59:59'</span><span class="p">)]</span>
     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">'M'</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_timestamp</span><span class="p">())</span>
@@ -9061,7 +9068,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">nola_monthly_trend</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'New Orleans'</span>
 
 
-<span class="c1">### Chicago monthly trend</span>
+<span class="c1"># Build the matching monthly time series for Chicago.</span>
 <span class="n">chi_monthly_trend</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_311</span><span class="p">[</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="s1">'2020-01-01'</span><span class="p">,</span> <span class="s1">'2025-12-31 23:59:59'</span><span class="p">)]</span>
     
@@ -9075,9 +9082,10 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">monthly_volume_trends</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">nola_monthly_trend</span><span class="p">,</span> <span class="n">chi_monthly_trend</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">monthly_volume_trends</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 
-<span class="c1">### plot line charts comparing the monthly 311 request volume trends between New Orleans and Chicago from January 2020 through December 2025, using the same x-axis</span>
+<span class="c1"># plot line charts comparing the monthly 311 request volume trends between New Orleans and Chicago from January 2020 through December 2025, using the same x-axis</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span>
 
+<span class="c1"># Plot each city's monthly pattern on its own axis for easier reading.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'New Orleans'</span><span class="p">:</span> <span class="s1">'#2a9d8f'</span><span class="p">,</span> <span class="s1">'Chicago'</span><span class="p">:</span> <span class="s1">'#e76f51'</span><span class="p">}</span>
@@ -9151,6 +9159,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="s1">'Jul'</span><span class="p">,</span> <span class="s1">'Aug'</span><span class="p">,</span> <span class="s1">'Sep'</span><span class="p">,</span> <span class="s1">'Oct'</span><span class="p">,</span> <span class="s1">'Nov'</span><span class="p">,</span> <span class="s1">'Dec'</span>
 <span class="p">]</span>
 
+<span class="c1"># Compute the mean request volume for each calendar month across years.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">average_monthly_reports</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">city_name</span><span class="p">):</span>
     <span class="n">monthly_counts</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="s1">'2020-01-01'</span><span class="p">,</span> <span class="s1">'2025-12-31 23:59:59'</span><span class="p">)]</span>
@@ -9177,6 +9186,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">nola_avg_monthly_reports</span> <span class="o">=</span> <span class="n">average_monthly_reports</span><span class="p">(</span><span class="n">nola_311</span><span class="p">,</span> <span class="s1">'New Orleans'</span><span class="p">)</span>
 <span class="n">chi_avg_monthly_reports</span> <span class="o">=</span> <span class="n">average_monthly_reports</span><span class="p">(</span><span class="n">chi_311</span><span class="p">,</span> <span class="s1">'Chicago'</span><span class="p">)</span>
 
+<span class="c1"># Stack the city summaries so they can be plotted with shared formatting.</span>
 <span class="n">avg_monthly_volume</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
     <span class="p">[</span><span class="n">nola_avg_monthly_reports</span><span class="p">,</span> <span class="n">chi_avg_monthly_reports</span><span class="p">],</span>
     <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
@@ -9276,10 +9286,10 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [80]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### trimester request table for Chicago dataset to analyze the distribution of request reasons across trimesters, using the same trimester order for both datasets</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># trimester request table for Chicago dataset to analyze the distribution of request reasons across trimesters, using the same trimester order for both datasets</span>
 
 <span class="n">trimester_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'T1'</span><span class="p">,</span> <span class="s1">'T2'</span><span class="p">,</span> <span class="s1">'T3'</span><span class="p">]</span>
 
@@ -9299,6 +9309,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="p">)</span>
 
+<span class="c1"># Use each year's total T2 volume as the denominator for the change metric.</span>
 <span class="n">chi_t2_totals_by_year</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'year'</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">total_t2_requests</span><span class="o">=</span><span class="p">(</span><span class="s1">'T2'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">))</span>
@@ -9315,6 +9326,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">/</span> <span class="n">chi_trimester_yearly</span><span class="p">[</span><span class="s1">'total_t2_requests'</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
 <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
+<span class="c1"># Average the yearly T1-to-T2 change for each request type.</span>
 <span class="n">chi_trimester_percentage_summary</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'request_reason'</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
@@ -9322,6 +9334,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="p">)</span>
 <span class="p">)</span>
 
+<span class="c1"># Merge the trimester counts with the percentage-change summary table.</span>
 <span class="n">chi_trimester_request_table</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'request_reason'</span><span class="p">)[</span><span class="n">trimester_order</span><span class="p">]</span>
     <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -9353,7 +9366,7 @@ Datapoints in Chicago dataset: 7125138
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[80]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -9575,10 +9588,10 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [82]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### creating a similar trimester request table for New Orleans dataset to compare the distribution of request reasons across trimesters between the two cities, using the same trimester order for both datasets</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># creating a similar trimester request table for New Orleans dataset to compare the distribution of request reasons across trimesters between the two cities, using the same trimester order for both datasets</span>
 
 <span class="n">trimester_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'T1'</span><span class="p">,</span> <span class="s1">'T2'</span><span class="p">,</span> <span class="s1">'T3'</span><span class="p">]</span>
 
@@ -9598,6 +9611,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="p">)</span>
 
+<span class="c1"># Compute New Orleans yearly T2 totals for the same percentage-change calculation.</span>
 <span class="n">nola_t2_totals_by_year</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'year'</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">total_t2_requests</span><span class="o">=</span><span class="p">(</span><span class="s1">'T2'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">))</span>
@@ -9614,6 +9628,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">/</span> <span class="n">nola_trimester_yearly</span><span class="p">[</span><span class="s1">'total_t2_requests'</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
 <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
+<span class="c1"># Average the yearly T1-to-T2 change by request reason.</span>
 <span class="n">nola_trimester_percentage_summary</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'request_reason'</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
@@ -9621,6 +9636,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="p">)</span>
 <span class="p">)</span>
 
+<span class="c1"># Combine the trimester counts and average change metric for reporting.</span>
 <span class="n">nola_trimester_request_table</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_trimester_yearly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'request_reason'</span><span class="p">)[</span><span class="n">trimester_order</span><span class="p">]</span>
     <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -9652,7 +9668,7 @@ Datapoints in Chicago dataset: 7125138
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[82]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -9887,11 +9903,12 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [40]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### ida trace from August 1, 2021 through October 31, 2021 to capture the period around Hurricane Ida's landfall on August 29, 2021, and analyze the impact of the hurricane on 311 request volume in New Orleans during that time frame</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># ida trace from August 1, 2021 through October 31, 2021 to capture the period around Hurricane Ida's landfall on August 29, 2021, and analyze the impact of the hurricane on 311 request volume in New Orleans during that time frame</span>
 
+<span class="c1"># Aggregate daily request counts around Hurricane Ida to show the local surge pattern.</span>
 <span class="n">ida_trace</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="s1">'2021-08-01'</span><span class="p">,</span> <span class="s1">'2021-10-31 23:59:59'</span><span class="p">)]</span>
     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="s1">'D'</span><span class="p">))</span>
@@ -9964,10 +9981,11 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### francine trace from August 15, 2024 through October 15, 2024 to capture the period around Hurricane Francine's landfall on September 11, 2024, and analyze the impact of the hurricane on 311 request volume in New Orleans during that time frame</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># francine trace from August 15, 2024 through October 15, 2024 to capture the period around Hurricane Francine's landfall on September 11, 2024, and analyze the impact of the hurricane on 311 request volume in New Orleans during that time frame</span>
+<span class="c1"># Repeat the same daily tracing approach for Hurricane Francine.</span>
 <span class="n">francine_trace</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="s1">'2024-08-15'</span><span class="p">,</span> <span class="s1">'2024-10-15 23:59:59'</span><span class="p">)]</span>
     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="s1">'D'</span><span class="p">))</span>
@@ -10040,10 +10058,10 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [109]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### top 10 most common request reasons in each city with percentage </span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># top 10 most common request reasons in each city with percentage </span>
 <span class="n">nola_top_reasons</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="s1">'request_reason'</span><span class="p">]</span>
     <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">'Unknown'</span><span class="p">)</span>
@@ -10068,6 +10086,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">)</span>
 <span class="n">chi_top_reasons</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Chicago'</span>
 
+<span class="c1"># Plot the city summaries in separate vertical panels.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
@@ -10172,17 +10191,20 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [85]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### compare the distribution of time to close requests between the two cities, focusing on resolved requests where date_closed is after date_created, and calculating the time to close in days for each resolved request</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># compare the distribution of time to close requests between the two cities, focusing on resolved requests where date_closed is after date_created, and calculating the time to close in days for each resolved request</span>
 
+<span class="c1"># Keep only resolved requests with a non-negative closure interval.</span>
 <span class="n">nola_resolved</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[(</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">chi_resolved</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[(</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+<span class="c1"># Convert each closure interval to days so the distributions can be compared.</span>
 <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">-</span> <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">86400</span>
 <span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">-</span> <span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">86400</span>
 
+<span class="c1"># Mark the interquartile range to show the typical closure window.</span>
 <span class="n">nola_q1</span><span class="p">,</span> <span class="n">nola_median</span><span class="p">,</span> <span class="n">nola_q3</span> <span class="o">=</span> <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
 <span class="n">chi_q1</span><span class="p">,</span> <span class="n">chi_median</span><span class="p">,</span> <span class="n">chi_q3</span> <span class="o">=</span> <span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
 
@@ -10280,6 +10302,7 @@ Datapoints in Chicago dataset: 7125138
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">### top 10 most requested items with their median time to close and share of total requests</span>
 
+<span class="c1"># Pair the most common request types with their median closure times.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_top_request_summary</span><span class="p">(</span><span class="n">all_requests_df</span><span class="p">,</span> <span class="n">resolved_requests_df</span><span class="p">,</span> <span class="n">city_name</span><span class="p">):</span>
     <span class="n">top_request_counts</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">all_requests_df</span><span class="p">[</span><span class="s1">'request_reason'</span><span class="p">]</span>
@@ -10296,6 +10319,7 @@ Datapoints in Chicago dataset: 7125138
         <span class="n">top_request_counts</span><span class="p">[</span><span class="s1">'request_count'</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_requests_df</span><span class="p">)</span>
     <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
+    <span class="c1"># Use the resolved subset when computing closure-time medians.</span>
     <span class="n">median_close_times</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">resolved_requests_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'request_reason'</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span>
         <span class="o">.</span><span class="n">median</span><span class="p">()</span>
@@ -10323,6 +10347,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">)</span>
 
 
+<span class="c1"># Show New Orleans and Chicago in separate stacked charts.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1"># Bar length shows median days to close, while the annotation shows each request type's share of total requests.</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'New Orleans'</span><span class="p">:</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">'Set2'</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">'Chicago'</span><span class="p">:</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">'Set2'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]}</span>
@@ -10406,6 +10431,7 @@ Datapoints in Chicago dataset: 7125138
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Rebuild the resolved datasets excluding aircraft noise requests for the Chicago comparison plot.</span>
 
+<span class="c1"># Recreate the resolved subsets for this comparison and filter out aircraft-noise outliers in Chicago.</span>
 <span class="n">nola_resolved</span> <span class="o">=</span> <span class="n">nola_311</span><span class="p">[(</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">nola_311</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">chi_resolved_no_aircraft</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span>
     <span class="p">(</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">())</span>
@@ -10416,6 +10442,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">-</span> <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">86400</span>
 <span class="n">chi_resolved_no_aircraft</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">chi_resolved_no_aircraft</span><span class="p">[</span><span class="s1">'date_closed'</span><span class="p">]</span> <span class="o">-</span> <span class="n">chi_resolved_no_aircraft</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">86400</span>
 
+<span class="c1"># Calculate quartiles again for the adjusted histogram comparison.</span>
 <span class="n">nola_q1</span><span class="p">,</span> <span class="n">nola_median</span><span class="p">,</span> <span class="n">nola_q3</span> <span class="o">=</span> <span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
 <span class="n">chi_q1</span><span class="p">,</span> <span class="n">chi_median</span><span class="p">,</span> <span class="n">chi_q3</span> <span class="o">=</span> <span class="n">chi_resolved_no_aircraft</span><span class="p">[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
 
@@ -10508,13 +10535,14 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [119]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### compare the median time to close requests by district in New Orleans and by precinct in Chicago </span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># compare the median time to close requests by district in New Orleans and by precinct in Chicago </span>
 
 
-<span class="c1">### calculate the median time to close requests by council district in New Orleans, excluding records with missing council district values, and sort the results in descending order to identify which districts have the longest resolution times</span>
+<span class="c1"># calculate the median time to close requests by council district in New Orleans, excluding records with missing council district values, and sort the results in descending order to identify which districts have the longest resolution times</span>
+<span class="c1"># Summarize the median closure time by New Orleans council district.</span>
 <span class="n">nola_district_efficiency</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_resolved</span><span class="p">[</span><span class="n">nola_resolved</span><span class="p">[</span><span class="s1">'council_district'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
     <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'council_district'</span><span class="p">)[</span><span class="s1">'time_to_close_days'</span><span class="p">]</span>
@@ -10523,7 +10551,8 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="p">)</span>
 
-<span class="c1">### calculate the median time to close requests by precinct in Chicago, excluding records with missing precinct values, converting precinct values to numeric for proper sorting, and sorting the results in ascending order to identify which precincts have the shortest resolution times</span>
+<span class="c1"># calculate the median time to close requests by precinct in Chicago, excluding records with missing precinct values, converting precinct values to numeric for proper sorting, and sorting the results in ascending order to identify which precincts have the shortest resolution times</span>
+<span class="c1"># Convert Chicago precinct labels to numbers before grouping and sorting them.</span>
 <span class="n">chi_precinct_efficiency</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_resolved</span><span class="p">[</span><span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">precinct</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">chi_resolved</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chi_resolved</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">(),</span> <span class="s1">'precinct'</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'coerce'</span><span class="p">))</span>
@@ -10533,7 +10562,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 <span class="p">)</span>
 
-<span class="c1">### convert precinct values back to string for better visualization in the bar plot</span>
+<span class="c1"># convert precinct values back to string for better visualization in the bar plot</span>
 
 <span class="n">chi_precinct_efficiency</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_precinct_efficiency</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 <span class="n">precinct_order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chi_precinct_efficiency</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
@@ -10541,7 +10570,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 
 
-<span class="c1">### create side-by-side bar plots comparing the median time to close requests by council district in New Orleans and by precinct in Chicago</span>
+<span class="c1"># create side-by-side bar plots comparing the median time to close requests by council district in New Orleans and by precinct in Chicago</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">nola_district_efficiency</span><span class="p">,</span>
     <span class="n">x</span><span class="o">=</span><span class="s1">'time_to_close_days'</span><span class="p">,</span>
@@ -10605,10 +10634,11 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [120]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">### grouping the New Orleans dataset by council district and counting the number of requests for each district</span>
+<span class="c1"># Count how many total requests fall in each New Orleans council district.</span>
 <span class="n">nola_district_counts</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nola_311</span><span class="p">[</span><span class="n">nola_311</span><span class="p">[</span><span class="s1">'council_district'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
     <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'council_district'</span><span class="p">)</span>
@@ -10618,7 +10648,8 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">)</span>
 
 
-<span class="c1">### grouping the Chicago dataset by precinct, counting the number of requests for each precinct, converting precinct values to numeric for proper sorting, and sorting the results in ascending order to identify which precincts have the highest request volumes</span>
+<span class="c1"># grouping the Chicago dataset by precinct, counting the number of requests for each precinct, converting precinct values to numeric for proper sorting, and sorting the results in ascending order to identify which precincts have the highest request volumes</span>
+<span class="c1"># Do the same request-volume count for Chicago precincts.</span>
 <span class="n">chi_precinct_counts</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">chi_311</span><span class="p">[</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">precinct</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">chi_311</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">(),</span> <span class="s1">'precinct'</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'coerce'</span><span class="p">))</span>
@@ -10631,10 +10662,11 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">chi_precinct_counts</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_precinct_counts</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 <span class="n">precinct_order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chi_precinct_counts</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
+<span class="c1"># Plot the district and precinct totals side by side.</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 
 
-<span class="c1">### create side-by-side bar plots comparing the number of requests by council district in New Orleans and by precinct in Chicago</span>
+<span class="c1"># create side-by-side bar plots comparing the number of requests by council district in New Orleans and by precinct in Chicago</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">nola_district_counts</span><span class="p">,</span>
     <span class="n">x</span><span class="o">=</span><span class="s1">'request_count'</span><span class="p">,</span>
@@ -10709,10 +10741,11 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [102]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### precinct 27 top requests and proportion of each request reason among all requests in precinct 27</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># precinct 27 top requests and proportion of each request reason among all requests in precinct 27</span>
+<span class="c1"># Isolate precinct 27 before summarizing its internal request mix.</span>
 <span class="n">precinct_27_requests</span> <span class="o">=</span> <span class="n">chi_311</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">chi_311</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'coerce'</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">]</span>
 <span class="n">precinct_27_reason_counts</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">precinct_27_requests</span><span class="p">[</span><span class="s1">'request_reason'</span><span class="p">]</span>
@@ -10737,7 +10770,7 @@ Datapoints in Chicago dataset: 7125138
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[102]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -10916,6 +10949,7 @@ Datapoints in Chicago dataset: 7125138
 
 <span class="n">trimester_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'T1'</span><span class="p">,</span> <span class="s1">'T2'</span><span class="p">,</span> <span class="s1">'T3'</span><span class="p">]</span>
 
+<span class="c1"># Build the contingency table and chi-square diagnostics for one city at a time.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">seasonality_chi_square_test</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">city_name</span><span class="p">,</span> <span class="n">category_col</span><span class="o">=</span><span class="s1">'request_reason'</span><span class="p">):</span>
     <span class="n">working</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="n">category_col</span><span class="p">,</span> <span class="s1">'date_created'</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">working</span><span class="p">[</span><span class="s1">'trimester'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
@@ -10932,6 +10966,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="n">min_dim</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">contingency</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">contingency</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">cramers_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chi2</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">min_dim</span><span class="p">))</span> <span class="k">if</span> <span class="n">min_dim</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
+<span class="c1"># Compare observed counts with expected counts to locate the strongest seasonal deviations.</span>
     <span class="n">expected_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">expected</span><span class="p">,</span>
         <span class="n">index</span><span class="o">=</span><span class="n">contingency</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
@@ -11680,7 +11715,7 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [106]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Test the relationship between monthly request volume and average close time for each city.</span>
@@ -11691,7 +11726,8 @@ Datapoints in Chicago dataset: 7125138
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
 
-<span class="c1">### build a monthly combined panel from resolved requests only</span>
+<span class="c1"># build a monthly combined panel from resolved requests only</span>
+<span class="c1"># Collapse resolved requests to monthly city-level panels before measuring correlation.</span>
 <span class="n">nola_model_2</span> <span class="o">=</span> <span class="n">nola_resolved</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">nola_model_2</span><span class="p">[</span><span class="s1">'city'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'New Orleans'</span>
 <span class="n">nola_model_2</span><span class="p">[</span><span class="s1">'year_month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_2</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">'M'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
@@ -11708,6 +11744,7 @@ Datapoints in Chicago dataset: 7125138
     <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
+<span class="c1"># Compute monthly request volume and average closure time for each city.</span>
 <span class="n">model_2_monthly</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">model_2_base</span>
     <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'city'</span><span class="p">,</span> <span class="s1">'year_month'</span><span class="p">],</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -11722,6 +11759,7 @@ Datapoints in Chicago dataset: 7125138
 
 <span class="n">model_2_results</span> <span class="o">=</span> <span class="p">[]</span>
 
+<span class="c1"># Estimate Pearson correlation separately for Chicago and New Orleans.</span>
 <span class="k">for</span> <span class="n">city_name</span><span class="p">,</span> <span class="n">city_df</span> <span class="ow">in</span> <span class="n">model_2_monthly</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'city'</span><span class="p">):</span>
     <span class="n">avg_correlation</span><span class="p">,</span> <span class="n">avg_p_value</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">city_df</span><span class="p">[</span><span class="s1">'request_volume'</span><span class="p">],</span> <span class="n">city_df</span><span class="p">[</span><span class="s1">'avg_close_days'</span><span class="p">])</span>
 
@@ -11975,10 +12013,11 @@ Datapoints in Chicago dataset: 7125138
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [81]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### train and evaluate Model 1a: combined-city random forest with reduced feature set</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># train and evaluate Model 1a: combined-city random forest with reduced feature set</span>
+<span class="c1"># Select the shared feature set used by the combined-city baseline model.</span>
 <span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'city'</span><span class="p">,</span> <span class="s1">'geo_unit'</span><span class="p">,</span>
     <span class="s1">'created_month'</span><span class="p">,</span> <span class="s1">'created_day_of_week'</span><span class="p">,</span> <span class="s1">'created_hour'</span>
@@ -11988,6 +12027,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="n">X</span> <span class="o">=</span> <span class="n">combined_model_sample</span><span class="p">[</span><span class="n">feature_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">combined_model_sample</span><span class="p">[</span><span class="n">target_column</span><span class="p">]</span>
 
+<span class="c1"># Hold out a stratified test set so both cities remain represented in evaluation.</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
     <span class="n">test_size</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
@@ -12005,6 +12045,7 @@ Datapoints in Chicago dataset: 7125138
 <span class="p">]</span>
 <span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'created_hour'</span><span class="p">]</span>
 
+<span class="c1"># Impute missing values and one-hot encode categories before fitting the forest.</span>
 <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
         <span class="p">(</span>
@@ -12279,6 +12320,7 @@ Generating predictions on the test set...
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
 
+<span class="c1"># Build New Orleans-specific time and geography features for the baseline model.</span>
 <span class="n">nola_model_rf_compare</span> <span class="o">=</span> <span class="n">nola_resolved</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'geo_unit'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'council_district'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'created_month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
@@ -12286,6 +12328,7 @@ Generating predictions on the test set...
 <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'created_hour'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
 <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'created_quarter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Q'</span> <span class="o">+</span> <span class="n">nola_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">quarter</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 
+<span class="c1"># Use only current-request attributes in this baseline specification.</span>
 <span class="n">nola_feature_columns_no_history</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'geo_unit'</span><span class="p">,</span>
     <span class="s1">'created_month'</span><span class="p">,</span> <span class="s1">'created_day_of_week'</span><span class="p">,</span> <span class="s1">'created_hour'</span><span class="p">,</span>
@@ -12325,6 +12368,7 @@ Generating predictions on the test set...
 <span class="p">]</span>
 <span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'created_hour'</span><span class="p">,</span> <span class="s1">'latitude'</span><span class="p">,</span> <span class="s1">'longitude'</span><span class="p">]</span>
 
+<span class="c1"># Apply separate preprocessing to categorical and numeric predictors.</span>
 <span class="n">nola_preprocessor_no_history</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
         <span class="p">(</span>
@@ -12490,6 +12534,7 @@ Prediction step finished in 0.55 seconds
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
 
+<span class="c1"># Start from the same New Orleans base table before adding the historical median feature.</span>
 <span class="n">nola_model_rf_history</span> <span class="o">=</span> <span class="n">nola_resolved</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'geo_unit'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'council_district'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'created_month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
@@ -12497,6 +12542,7 @@ Prediction step finished in 0.55 seconds
 <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'created_hour'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
 <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'created_quarter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Q'</span> <span class="o">+</span> <span class="n">nola_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">quarter</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 
+<span class="c1"># Add the historical median as an extra numeric predictor.</span>
 <span class="n">nola_feature_columns_history</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span> <span class="s1">'geo_unit'</span><span class="p">,</span>
     <span class="s1">'created_month'</span><span class="p">,</span> <span class="s1">'created_day_of_week'</span><span class="p">,</span> <span class="s1">'created_hour'</span><span class="p">,</span>
@@ -12742,6 +12788,7 @@ Prediction step finished in 0.55 seconds
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
 
+<span class="c1"># Build the Chicago-specific feature table for the baseline model.</span>
 <span class="n">chi_model_rf_compare</span> <span class="o">=</span> <span class="n">chi_resolved</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'geo_unit'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'created_month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
@@ -12749,6 +12796,7 @@ Prediction step finished in 0.55 seconds
 <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'created_hour'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
 <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'created_quarter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Q'</span> <span class="o">+</span> <span class="n">chi_model_rf_compare</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">quarter</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 
+<span class="c1"># Include location coordinates in the Chicago-only specification.</span>
 <span class="n">chi_feature_columns_no_history</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'geo_unit'</span><span class="p">,</span> <span class="s1">'created_month'</span><span class="p">,</span>
     <span class="s1">'created_day_of_week'</span><span class="p">,</span> <span class="s1">'created_hour'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span>
@@ -12788,6 +12836,7 @@ Prediction step finished in 0.55 seconds
 <span class="p">]</span>
 <span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'created_hour'</span><span class="p">,</span> <span class="s1">'latitude'</span><span class="p">,</span> <span class="s1">'longitude'</span><span class="p">]</span>
 
+<span class="c1"># Preprocess categorical and numeric columns before fitting the model.</span>
 <span class="n">chi_preprocessor_no_history</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
         <span class="p">(</span>
@@ -12965,6 +13014,7 @@ Prediction step finished in 0.55 seconds
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
 
+<span class="c1"># Reuse the Chicago feature table and then attach the historical median feature.</span>
 <span class="n">chi_model_rf_history</span> <span class="o">=</span> <span class="n">chi_resolved</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'geo_unit'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'precinct'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'created_month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
@@ -12972,6 +13022,7 @@ Prediction step finished in 0.55 seconds
 <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'created_hour'</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
 <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'created_quarter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Q'</span> <span class="o">+</span> <span class="n">chi_model_rf_history</span><span class="p">[</span><span class="s1">'date_created'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">quarter</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'string'</span><span class="p">)</span>
 
+<span class="c1"># Extend the baseline predictors with the historical timing feature.</span>
 <span class="n">chi_feature_columns_history</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'request_reason'</span><span class="p">,</span> <span class="s1">'geo_unit'</span><span class="p">,</span> <span class="s1">'created_month'</span><span class="p">,</span>
     <span class="s1">'created_day_of_week'</span><span class="p">,</span> <span class="s1">'created_hour'</span><span class="p">,</span> <span class="s1">'responsible_agency'</span><span class="p">,</span>
